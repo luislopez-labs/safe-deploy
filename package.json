@@ -1,0 +1,44 @@
+{
+  "name": "safe-deploy",
+  "version": "1.0.0",
+  "description": "Deploys de sitios estáticos (Vite/SPA) que no rompen la página a quien la tiene abierta: 404 reales, caché correcta, recuperación automática y assets de builds anteriores. Pensado para Cloudflare Pages.",
+  "type": "module",
+  "license": "MIT",
+  "repository": "github:luislopez-labs/safe-deploy",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "bin": {
+    "safe-deploy": "bin/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./vite": {
+      "types": "./src/vite.d.ts",
+      "default": "./src/vite.js"
+    },
+    "./client": {
+      "types": "./src/client.d.ts",
+      "default": "./src/client.js"
+    }
+  },
+  "files": [
+    "src",
+    "bin",
+    "docs",
+    "skill",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "peerDependencies": {
+    "vite": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  }
+}
