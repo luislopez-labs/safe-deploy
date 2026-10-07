@@ -8,4 +8,4 @@ export {
   lintHeaders,
   lintRedirects,
 } from './cloudflare.js';
-export { buildGuardScript, GUARD_FILE } from './guard.js';
+export { buildGuardScript, findGuardScript, GUARD_FILE } from './guard.js';

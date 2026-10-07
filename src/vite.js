@@ -8,7 +8,7 @@ import { join, resolve } from 'node:path';
 import { loadEnv } from 'vite';
 import { applyCloudflarePages } from './cloudflare.js';
 import { carryOverAssets } from './carry-over.js';
-import { buildGuardScript, GUARD_FILE } from './guard.js';
+import { buildGuardScript, findGuardScript, GUARD_FILE } from './guard.js';
 
 const TAG = '[safe-deploy]';
 
@@ -32,7 +32,7 @@ export function safeDeploy(options = {}) {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        if (html.includes(GUARD_FILE)) return html;
+        if (findGuardScript(html) !== -1) return html;
         const base = config.base.startsWith('/') ? config.base : '/';
         return [{ tag: 'script', attrs: { src: `${base}${GUARD_FILE}` }, injectTo: 'head-prepend' }];
       },

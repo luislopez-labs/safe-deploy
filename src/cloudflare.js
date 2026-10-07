@@ -6,7 +6,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { GUARD_FILE } from './guard.js';
+import { findGuardScript, GUARD_FILE } from './guard.js';
 
 const read = (path) => readFile(path, 'utf8').catch(() => null);
 
@@ -245,7 +245,7 @@ export async function applyCloudflarePages(options) {
 
   const index = await read(join(outDir, 'index.html'));
   if (index !== null) {
-    const guardAt = index.indexOf(GUARD_FILE);
+    const guardAt = findGuardScript(index);
     const moduleAt = index.search(/<script[^>]+type=["']module["']/);
     if (guardAt === -1) {
       problems.push(`index.html no carga ${GUARD_FILE}: si el bundle principal falla, la página queda en blanco.`);

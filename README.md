@@ -13,7 +13,7 @@ Evita los tres problemas típicos después de subir un build nuevo:
 ## Instalación
 
 ```bash
-npm i -D github:luislopez-labs/safe-deploy#v1.0.0
+npm i -D github:luislopez-labs/safe-deploy#v1.0.1
 ```
 
 ## Uso con Vite

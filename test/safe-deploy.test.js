@@ -12,6 +12,7 @@ import {
   buildRedirects,
   carryOverAssets,
   checkDeployment,
+  findGuardScript,
   lintHeaders,
   lintRedirects,
 } from '../src/index.js';
@@ -168,4 +169,16 @@ test('checkDeployment: sitio correcto pasa; SPA fallback y ruta rota fallan', as
   const res = await checkDeployment({ siteUrl: cached.url });
   cached.close();
   assert.ok(res.results.some((r) => r.level === 'fail' && r.message.includes('HTML se puede cachear')));
+});
+
+test('findGuardScript ignora menciones en comentarios y texto', async () => {
+  const comment = '<head><!-- el build inserta /stale-asset-guard.js aquí --><script type="module" src="/assets/a.js"></script></head>';
+  assert.equal(findGuardScript(comment), -1);
+  assert.equal(findGuardScript('<p>stale-asset-guard.js</p>'), -1);
+  assert.ok(findGuardScript('<head><script src="/stale-asset-guard.js"></script></head>') > 0);
+  assert.ok(findGuardScript("<script defer src='/base/stale-asset-guard.js?v=2'></script>") === 0);
+
+  const outDir = await tmp();
+  await writeFile(join(outDir, 'index.html'), comment);
+  assert.ok((await applyCloudflarePages({ outDir })).problems.some((p) => p.includes('no carga')));
 });

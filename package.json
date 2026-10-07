@@ -1,6 +1,6 @@
 {
   "name": "safe-deploy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Deploys de sitios estáticos (Vite/SPA) que no rompen la página a quien la tiene abierta: 404 reales, caché correcta, recuperación automática y assets de builds anteriores. Pensado para Cloudflare Pages.",
   "type": "module",
   "license": "MIT",

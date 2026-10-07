@@ -17,7 +17,7 @@ El objetivo es uno: **que un deploy nunca deje a un cliente con la página rota*
 
 ## 2. Instalar en un proyecto Vite
 
-1. `npm i -D github:luislopez-labs/safe-deploy#v1.0.0` (usa el tag más reciente del repositorio).
+1. `npm i -D github:luislopez-labs/safe-deploy#v1.0.1` (usa el tag más reciente del repositorio: `git ls-remote --tags https://github.com/luislopez-labs/safe-deploy`).
 2. En `vite.config`: `import { safeDeploy } from 'safe-deploy/vite'` y agrégalo a `plugins` con `routes`.
 3. **`routes`**: lee el router del proyecto (`createBrowserRouter`, `<Route>`, `routes/`) y lista todas las rutas. Convierte los parámetros en comodín: `/rifa/:id` y `/rifa/:id/cuentas` → `/rifa/*`. No incluyas `/`. Nunca uses `/*`.
 4. En el archivo de entrada (`main.tsx`): `import { installChunkRecovery } from 'safe-deploy/client'` y llama `installChunkRecovery()` antes de montar la app.

@@ -2,7 +2,7 @@
 // protegido. Es lo que hay que correr después de cada deploy.
 
 import { MANIFEST_FILE } from './carry-over.js';
-import { GUARD_FILE } from './guard.js';
+import { findGuardScript, GUARD_FILE } from './guard.js';
 
 /**
  * @param {object} options
@@ -38,7 +38,7 @@ export async function checkDeployment(options) {
   } else add('ok', 'El HTML no se cachea');
 
   // 2. Guard
-  const guardAt = html.indexOf(GUARD_FILE);
+  const guardAt = findGuardScript(html);
   const moduleAt = html.search(/<script[^>]+type=["']module["']/);
   if (guardAt === -1) add('fail', `index.html no carga ${GUARD_FILE}`);
   else if (moduleAt !== -1 && guardAt > moduleAt) add('fail', `${GUARD_FILE} está después del bundle`);

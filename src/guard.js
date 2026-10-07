@@ -3,6 +3,15 @@
 
 export const GUARD_FILE = 'stale-asset-guard.js';
 
+/**
+ * Posición del <script> que carga el guard, o -1 si no hay. Busca la etiqueta real:
+ * una mención del nombre en un comentario o en texto no cuenta.
+ */
+export function findGuardScript(html) {
+  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, (c) => ' '.repeat(c.length));
+  return withoutComments.search(/<script\b[^>]*\bsrc=["'][^"']*stale-asset-guard\.js[^"']*["']/i);
+}
+
 const DEFAULT_TEXTS = {
   updatingTitle: 'Actualizando la página…',
   updatingBody: 'Estamos cargando la versión más reciente. Solo tomará unos segundos.',
