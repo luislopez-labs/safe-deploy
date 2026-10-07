@@ -21,13 +21,15 @@ const DEFAULT_TEXTS = {
 };
 
 /**
- * @param {{ assetPrefixes?: string[], texts?: Partial<typeof DEFAULT_TEXTS> }} [options]
+ * @param {{ assetPrefixes?: string[], texts?: Partial<typeof DEFAULT_TEXTS>, logo?: string }} [options]
+ *   `logo`: URL de una imagen (sin hash, p. ej. "/logo.png") que se muestra en la pantalla de espera.
  * @returns {string} código JS listo para servir como /stale-asset-guard.js
  */
 export function buildGuardScript(options = {}) {
   const config = {
     prefixes: options.assetPrefixes?.length ? options.assetPrefixes : ['/assets/'],
     texts: { ...DEFAULT_TEXTS, ...options.texts },
+    logo: typeof options.logo === 'string' ? options.logo : '',
   };
   return `// safe-deploy: recuperación cuando un archivo con hash no carga. NO editar: se genera en el build.
 //
@@ -52,6 +54,7 @@ function guardRuntime(config) {
 
   var busy = false;
   var overlay = null;
+  var overlayState = null; // null = sin mostrar, false = "actualizando", true = "falló"
 
   function read(key) {
     try { return sessionStorage.getItem(key); } catch (e) { return null; }
@@ -92,14 +95,54 @@ function guardRuntime(config) {
         'background:#0f0f10;color:#f4f4f5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
       document.body.appendChild(overlay);
     }
+    // Se reintenta cada 1.5 s: no reconstruir si ya muestra ese estado (reiniciaría la animación).
+    if (overlayState === failed) return;
+    overlayState = failed;
     overlay.textContent = '';
+
+    if (config.logo) {
+      var logo = document.createElement('img');
+      logo.alt = '';
+      logo.style.cssText = 'max-height:56px;max-width:60vw;margin-bottom:8px';
+      logo.onerror = function () { if (logo.parentNode) logo.parentNode.removeChild(logo); };
+      logo.src = config.logo;
+      overlay.appendChild(logo);
+    }
+
     var title = document.createElement('div');
     title.style.cssText = 'font-size:1.25rem;font-weight:700';
-    title.textContent = failed ? T.failedTitle : T.updatingTitle;
+    // Los puntos animados de abajo hacen de "…": se quitan del título para no duplicarlos.
+    title.textContent = failed ? T.failedTitle : T.updatingTitle.replace(/(…|\.{3})\s*$/, '');
     var text = document.createElement('div');
     text.style.cssText = 'color:#a1a1aa;max-width:22rem';
     text.textContent = failed ? T.failedBody : T.updatingBody;
     overlay.appendChild(title);
+
+    if (!failed) {
+      // Tres puntos que suben y bajan en cadena. Web Animations API: no necesita <style>,
+      // así que funciona aunque el sitio tenga una CSP que prohíba estilos en línea.
+      var dots = document.createElement('div');
+      dots.setAttribute('aria-hidden', 'true');
+      dots.style.cssText = 'display:flex;gap:8px;height:18px;align-items:center';
+      for (var i = 0; i < 3; i++) {
+        var dot = document.createElement('span');
+        dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:#f4f4f5;opacity:.3';
+        dots.appendChild(dot);
+        if (dot.animate) {
+          dot.animate(
+            [
+              { opacity: 0.3, transform: 'translateY(0)' },
+              { opacity: 1, transform: 'translateY(-6px)', offset: 0.3 },
+              { opacity: 0.3, transform: 'translateY(0)', offset: 0.6 },
+              { opacity: 0.3, transform: 'translateY(0)' }
+            ],
+            { duration: 1200, iterations: Infinity, delay: i * 180 }
+          );
+        }
+      }
+      overlay.appendChild(dots);
+    }
+
     overlay.appendChild(text);
     if (failed) {
       var button = document.createElement('button');

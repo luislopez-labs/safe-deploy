@@ -46,7 +46,7 @@ export function safeDeploy(options = {}) {
 
       await writeFile(
         join(outDir, GUARD_FILE),
-        buildGuardScript({ assetPrefixes: [assetPrefix], texts: options.texts }),
+        buildGuardScript({ assetPrefixes: [assetPrefix], texts: options.texts, logo: options.logo }),
         'utf8',
       );
 

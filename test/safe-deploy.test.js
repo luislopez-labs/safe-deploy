@@ -92,6 +92,8 @@ test('buildGuardScript produce JS válido que expone __recoverStaleAsset', () =>
   assert.equal(typeof window.__recoverStaleAsset, 'function');
   assert.equal(typeof listeners.error, 'function');
   assert.ok(code.includes('/static/') && code.includes('Otra vez'));
+  assert.ok(!code.includes('/marca.png'));
+  assert.ok(buildGuardScript({ logo: '/marca.png' }).includes('"logo":"/marca.png"'));
 });
 
 test('carryOverAssets: sin manifest descubre los assets siguiendo el index.html', async () => {

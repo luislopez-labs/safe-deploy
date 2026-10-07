@@ -13,7 +13,7 @@ Evita los tres problemas típicos después de subir un build nuevo:
 ## Instalación
 
 ```bash
-npm i -D github:luislopez-labs/safe-deploy#v1.0.1
+npm i -D github:luislopez-labs/safe-deploy#v1.1.0
 ```
 
 ## Uso con Vite
@@ -89,6 +89,7 @@ npx safe-deploy check --site https://midominio.com --route producto/1 --route co
 | `headers` | `{}` | Headers extra (CSP, HSTS…) para `/*` cuando `_headers` se genera. |
 | `notFound` | textos en español | Textos de la página 404 generada. |
 | `texts` | textos en español | Textos de la pantalla "Actualizando la página…". |
+| `logo` | sin logo | Imagen para esa pantalla. Debe ser un archivo sin hash de `public/` (ej. `/logo.png`). |
 | `host` | `'cloudflare-pages'` | `'none'` = solo guard + assets anteriores. |
 | `strict` | `false` | `true`: el build falla si hay problemas. |
 

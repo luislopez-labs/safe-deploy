@@ -19,6 +19,11 @@ export interface SafeDeployOptions {
   headers?: Record<string, string>;
   /** Textos de la página 404 generada. */
   notFound?: { lang?: string; title?: string; message?: string; homeLabel?: string };
+  /**
+   * Imagen para la pantalla "Actualizando la página". Debe ser un archivo SIN hash
+   * (de public/, p. ej. "/logo.png"): los que llevan hash son justo los que pueden faltar.
+   */
+  logo?: string;
   /** Textos de la pantalla de recuperación. */
   texts?: {
     updatingTitle?: string;
